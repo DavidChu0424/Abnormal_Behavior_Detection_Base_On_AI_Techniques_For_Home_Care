@@ -64,7 +64,7 @@ X6 = dataset.iloc[:,41:49].values
 ################Counter###############
 charlist = ['a','b','c','d','e','f']
 Xdata = [X,X2,X3,X4,X5,X6]
-Importlist = [[]* r for l in range(6)]#建構 List，維度 = X label長度
+Importlist = [[]* r for l in range(6)]# 多為度轉換 List，維度= X label長度
 for j in range(6):
     for h in range(6): 
         m = 0
