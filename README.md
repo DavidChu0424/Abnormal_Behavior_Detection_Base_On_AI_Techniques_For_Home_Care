@@ -3,3 +3,4 @@
 2. Behavior data should include the behavior type and during time.
 3. Clustering the day behavior and return the clustering result for health check. 
 4. Behavior type : "起床", "刷牙", "上廁所", "吃飯", "休閒活動", "睡覺"
+5. Export the report of the abnormal behavior day.  
