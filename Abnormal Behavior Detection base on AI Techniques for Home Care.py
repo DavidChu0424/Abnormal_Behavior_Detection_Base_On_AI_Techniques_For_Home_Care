@@ -36,6 +36,7 @@ root.withdraw()
 print("請選擇老年人行為記錄檔!")
 fileread = filedialog.askopenfilename()
 dataset = pd.read_csv(fileread , encoding = "big5")
+dataset_export = dataset
 
 number = int(input("請輸入想分群的數目 : "))
 
@@ -64,7 +65,7 @@ X6 = dataset.iloc[:,41:49].values
 ################Counter###############
 charlist = ['a','b','c','d','e','f']
 Xdata = [X,X2,X3,X4,X5,X6]
-Importlist = [[]* r for l in range(6)]# 多為度轉換 List，維度= X label長度
+Importlist = [[]* r for l in range(6)]#建構 List，維度 = X label長度
 for j in range(6):
     for h in range(6): 
         m = 0
@@ -227,13 +228,30 @@ df6 = df6.rename(columns={'c':'c6'})
 df6 = df6.rename(columns={'d':'d6'})
 df6 = df6.rename(columns={'e':'e6'})
 df6 = df6.rename(columns={'f':'f6'})  
-#X6段處理 
+#X6段處理
+ 
 frames = [df,df2,df3,df4,df5,df6]
 df_all = pd.concat(frames,axis=1)#合併
 
+#權重處理
+
+for i in range(len(df_all.columns)):
+    if df_all.columns[i] == "d1" or df_all.columns[i] == "d2" or df_all.columns[i] == "d3" or df_all.columns[i] == "d4" or df_all.columns[i] == "d5" or df_all.columns[i] == "d6":
+        df_all[df_all.columns[i]] = df_all[df_all.columns[i]] * 2
+
+
+for i in range(len(df_all.columns)):
+    if df_all.columns[i] == "c1" or df_all.columns[i] == "c2" or df_all.columns[i] == "c3" or df_all.columns[i] == "c4" or df_all.columns[i] == "c5" or df_all.columns[i] == "c6":
+        df_all[df_all.columns[i]] = df_all[df_all.columns[i]] * 2
+
+#權重處理
+
+print(df_all)
+
+
 # Hierarchical Clustering 演算法
 hclust = cluster.AgglomerativeClustering(linkage = 'ward', affinity = 'euclidean', n_clusters = number )
-df_all
+
 # 印出分群結果
 hclust.fit(df_all)
 cluster_labels = hclust.labels_
@@ -244,7 +262,9 @@ hclust.fit(df_all)
 cluster_labels = hclust.labels_
 silhouette_avg = metrics.silhouette_score(df_all, cluster_labels)
 print(silhouette_avg)
- # Hierarchical Clustering 演算法   """    
+# 印出分群結果  
+    
+# Hierarchical Clustering 演算法   """    
 
 ###################樹狀圖形輸出##################
 Z = linkage(df_all, 'single')  # X: 資料在下面的示範中會有
@@ -252,3 +272,62 @@ plt.figure()
 dn = dendrogram(Z)
 plt.show() 
 ###################樹狀圖形輸出##################
+###################群集計算輸出##################
+# 計算群集數量
+unique = []
+for i in cluster_labels:
+    if i not in unique:
+        unique.append(i)
+
+counters = []
+counter = collections.Counter(cluster_labels)
+for i in unique:
+    temp = []
+    temp.append(i)
+    temp.append(counter[i])
+    counters.append(temp)   
+
+minima = ""
+for i in range(len(counters)):
+    try:
+        if counters[i][1] > counters[i+1][1]:
+            minima = counters[i+1]
+    except IndexError:
+        continue
+    
+#print(counters)
+#print("最小群集", minima)
+
+cluster_labels = list(cluster_labels)
+
+for i in range(len(cluster_labels)): 
+    if cluster_labels[i] == minima[0]:
+        cluster_labels[i] = "異常"
+    else: 
+        cluster_labels[i] = "正常"
+    
+#print(cluster_labels)
+
+dataset_export = dataset_export.set_index("Day")
+dataset_export["判斷結果"] = cluster_labels
+print(dataset_export)
+
+dataset_export.to_excel("ABDT異常日判斷結果.xls")
+###################群集計算輸出##################
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
