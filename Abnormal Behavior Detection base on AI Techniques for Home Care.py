@@ -288,15 +288,29 @@ for i in unique:
     counters.append(temp)   
 
 minima = ""
-for i in range(len(counters)):
+c = 0
+
+for ln in range(len(counters)):
     try:
-        if counters[i][1] > counters[i+1][1]:
-            minima = counters[i+1]
+        
+        if c == 0:
+            minima = counters[ln]
+            c +=1
+            
+        if c != 0:
+            if counters[ln][1] > minima[1] and c != 0:
+                minima = minima
+        
+            elif counters[ln][1] < minima[1] and c != 0:
+                minima = counters[ln]
+        
     except IndexError:
         continue
     
-#print(counters)
-#print("最小群集", minima)
+
+print(counters)
+print("最小群集", minima)
+
 
 cluster_labels = list(cluster_labels)
 
