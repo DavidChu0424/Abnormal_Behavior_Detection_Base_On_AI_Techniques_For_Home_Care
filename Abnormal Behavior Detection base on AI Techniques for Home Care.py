@@ -292,7 +292,6 @@ c = 0
 
 for ln in range(len(counters)):
     try:
-        
         if c == 0:
             minima = counters[ln]
             c +=1
